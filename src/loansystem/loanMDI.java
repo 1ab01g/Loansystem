@@ -13,6 +13,8 @@ import javax.swing.JOptionPane;
  */
 public class loanMDI extends javax.swing.JFrame {
     fmLogin fm = null;
+    LoanData_user fm2 = null;
+    LoanData_search fm3 = null;
     UserLogin user = new UserLogin();
     /**
      * Creates new form loanMDI
@@ -35,36 +37,32 @@ public class loanMDI extends javax.swing.JFrame {
         desktopPane = new javax.swing.JDesktopPane();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
-        openMenuItem = new javax.swing.JMenuItem();
-        saveMenuItem = new javax.swing.JMenuItem();
-        saveAsMenuItem = new javax.swing.JMenuItem();
+        userInfoItem = new javax.swing.JMenuItem();
+        searchMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
-        editMenu = new javax.swing.JMenu();
-        cutMenuItem = new javax.swing.JMenuItem();
-        copyMenuItem = new javax.swing.JMenuItem();
-        pasteMenuItem = new javax.swing.JMenuItem();
-        deleteMenuItem = new javax.swing.JMenuItem();
-        helpMenu = new javax.swing.JMenu();
-        contentMenuItem = new javax.swing.JMenuItem();
-        aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         fileMenu.setMnemonic('f');
-        fileMenu.setText("File");
+        fileMenu.setText("Menu");
 
-        openMenuItem.setMnemonic('o');
-        openMenuItem.setText("Open");
-        fileMenu.add(openMenuItem);
+        userInfoItem.setMnemonic('s');
+        userInfoItem.setText("UserInfo");
+        userInfoItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                userInfoItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(userInfoItem);
 
-        saveMenuItem.setMnemonic('s');
-        saveMenuItem.setText("Save");
-        fileMenu.add(saveMenuItem);
-
-        saveAsMenuItem.setMnemonic('a');
-        saveAsMenuItem.setText("Save As ...");
-        saveAsMenuItem.setDisplayedMnemonicIndex(5);
-        fileMenu.add(saveAsMenuItem);
+        searchMenuItem.setMnemonic('a');
+        searchMenuItem.setText("Search");
+        searchMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(searchMenuItem);
 
         exitMenuItem.setMnemonic('x');
         exitMenuItem.setText("Exit");
@@ -76,40 +74,6 @@ public class loanMDI extends javax.swing.JFrame {
         fileMenu.add(exitMenuItem);
 
         menuBar.add(fileMenu);
-
-        editMenu.setMnemonic('e');
-        editMenu.setText("Edit");
-
-        cutMenuItem.setMnemonic('t');
-        cutMenuItem.setText("Cut");
-        editMenu.add(cutMenuItem);
-
-        copyMenuItem.setMnemonic('y');
-        copyMenuItem.setText("Copy");
-        editMenu.add(copyMenuItem);
-
-        pasteMenuItem.setMnemonic('p');
-        pasteMenuItem.setText("Paste");
-        editMenu.add(pasteMenuItem);
-
-        deleteMenuItem.setMnemonic('d');
-        deleteMenuItem.setText("Delete");
-        editMenu.add(deleteMenuItem);
-
-        menuBar.add(editMenu);
-
-        helpMenu.setMnemonic('h');
-        helpMenu.setText("Help");
-
-        contentMenuItem.setMnemonic('c');
-        contentMenuItem.setText("Contents");
-        helpMenu.add(contentMenuItem);
-
-        aboutMenuItem.setMnemonic('a');
-        aboutMenuItem.setText("About");
-        helpMenu.add(aboutMenuItem);
-
-        menuBar.add(helpMenu);
 
         setJMenuBar(menuBar);
 
@@ -130,19 +94,39 @@ public class loanMDI extends javax.swing.JFrame {
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
+
+    private void userInfoItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userInfoItemActionPerformed
+        resetForm(fm2, fm3);
+        
+        fm2 = new LoanData_user();
+        desktopPane.add(fm2);
+        fm2.setVisible(true);
+        fm2.pack();
+    }//GEN-LAST:event_userInfoItemActionPerformed
+
+    private void searchMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchMenuItemActionPerformed
+        resetForm(fm2, fm3);
+        
+        fm3 = new LoanData_search();
+        desktopPane.add(fm3);
+        fm3.setVisible(true);
+        fm3.pack();
+    }//GEN-LAST:event_searchMenuItemActionPerformed
+    
     private void fmLoginDisplay() {
         if(fm == null) {
             fm = new fmLogin(new LoginListener(){
                 @Override
                 public void LoginValue(String pName,String pPass){
-                    if(pPass.equals(user.getPassword()) &&
-                        pName.equals(user.getName()))
+                    if(pName.equals(user.getName()) && 
+                        pPass.equals(user.getPassword()))
                     {
                         fm.dispose();
-                        LoanData fm2 = new LoanData();
+                        fm2 = new LoanData_user();
                         desktopPane.add(fm2);
                         fm2.setVisible(true);
                         fm2.pack();
+                        menuBar.setVisible(true);
                     }
                     else
                     {
@@ -154,6 +138,15 @@ public class loanMDI extends javax.swing.JFrame {
             fm.pack();
         }
         fm.setVisible(true); 
+    }
+    
+    private void resetForm(LoanData_user pFm1, LoanData_search pFm2) {
+        if(pFm1 != null) {
+            pFm1.dispose();
+        }
+        if(pFm2 != null) {
+            pFm2.dispose();
+        }
     }
     
     /**
@@ -192,21 +185,12 @@ public class loanMDI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem aboutMenuItem;
-    private javax.swing.JMenuItem contentMenuItem;
-    private javax.swing.JMenuItem copyMenuItem;
-    private javax.swing.JMenuItem cutMenuItem;
-    private javax.swing.JMenuItem deleteMenuItem;
     private javax.swing.JDesktopPane desktopPane;
-    private javax.swing.JMenu editMenu;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
-    private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuBar menuBar;
-    private javax.swing.JMenuItem openMenuItem;
-    private javax.swing.JMenuItem pasteMenuItem;
-    private javax.swing.JMenuItem saveAsMenuItem;
-    private javax.swing.JMenuItem saveMenuItem;
+    private javax.swing.JMenuItem searchMenuItem;
+    private javax.swing.JMenuItem userInfoItem;
     // End of variables declaration//GEN-END:variables
 
 }

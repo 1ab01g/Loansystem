@@ -6,18 +6,14 @@
 package loansystem;
 
 import java.io.*;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.*;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author kiwzu
  */
 
-public class LoanData extends javax.swing.JInternalFrame {
+public class LoanData_search extends javax.swing.JInternalFrame {
 
     
     public List<CalLoan> InstallmentList = new ArrayList<>();
@@ -27,12 +23,11 @@ public class LoanData extends javax.swing.JInternalFrame {
         Float InstallmentPrincipal;
         Float InstallmentInt;
     /**
-     * Creates new form lsm
+     * Creates new form
      */
-    public LoanData() {
+    public LoanData_search() {
         initComponents();
-        
-        
+        jTabbedPane1.remove(0);
     }
 
     /**
@@ -73,7 +68,7 @@ public class LoanData extends javax.swing.JInternalFrame {
         jScrollPane8 = new javax.swing.JScrollPane();
         tblSearch = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         btnSavefile.setText("บันทึก");
         btnSavefile.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -302,7 +297,7 @@ public class LoanData extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCalMouseClicked
-
+        /*
         
         //create userinfo obj
         
@@ -332,6 +327,8 @@ public class LoanData extends javax.swing.JInternalFrame {
         
         
         DefaultTableModel model = (DefaultTableModel)tblResult.getModel();
+        
+        model.setRowCount(0);
 
         for (int i = 1; i <= cust.getInstallment(); i++){
             System.out.println("Installment = " +i);
@@ -362,11 +359,11 @@ public class LoanData extends javax.swing.JInternalFrame {
             //set new BalancePrincipal
             PrincipalBal = PrincipalBal-InstallmentPrincipal;
         }
-        System.out.println("End: Cal");
+        System.out.println("End: Cal"); */
     }//GEN-LAST:event_btnCalMouseClicked
 
     private void btnSavefileMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSavefileMouseClicked
-        // TODO add your handling code here:
+        /* // TODO add your handling code here:
         
         System.out.println("Start: Save");
         
@@ -416,39 +413,36 @@ public class LoanData extends javax.swing.JInternalFrame {
         System.out.println("End Save: Before write");
         writeObjecttoFile(InstallmentList);
         System.out.println("End Save: After write");
-
+        */
     }//GEN-LAST:event_btnSavefileMouseClicked
 
     private void btnSearchMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSearchMouseClicked
-        // TODO add your handling code here:
+       InstallmentList = readDataFromFile();
        
-           
        DefaultTableModel mode1 = (DefaultTableModel)tblSearch.getModel();
+       mode1.setRowCount(0);
        //CalLoan cal = new CalLoan();
        
-       String sName;
-       
-       sName = txtFullname.getText();
        System.out.println(txtFullname.getText());
        System.out.println(cust.getFname());
        
        
-           if (txtFullname.getText().equalsIgnoreCase(cust.getFname())){
-           for (int i = 1; i <= cust.getInstallment(); i++){
+        if (txtFullname.getText().equalsIgnoreCase(cust.getFname())){
+           Float PrincipalBal = cust.getAmount();
+            for (int i = 1; i <= cust.getInstallment(); i++){
 
             String s = String.valueOf(cust.getIntRate()+"%");
             TotalInt = (float)cust.getAmount()*((cust.getIntRate()/100)*(cust.getInstallment()/(float)12));
-        System.out.println("TotalInt = " + TotalInt);
+            System.out.println("TotalInt = " + TotalInt);
 
-        InstallmentPrincipal = (float)cust.getAmount()/(float)cust.getInstallment();
-        System.out.println("InstallmentPrincipal = " + InstallmentPrincipal);
-        InstallmentInt = (float)TotalInt/(float)cust.getInstallment();
-        System.out.println("InstallmentAmount = " + InstallmentInt);
+            InstallmentPrincipal = (float)cust.getAmount()/(float)cust.getInstallment();
+            System.out.println("InstallmentPrincipal = " + InstallmentPrincipal);
+            InstallmentInt = (float)TotalInt/(float)cust.getInstallment();
+            System.out.println("InstallmentAmount = " + InstallmentInt);
 
-        Totalinstallment = InstallmentPrincipal +  InstallmentInt;
-        System.out.println("Totalinstallment = " + Totalinstallment);
+            Totalinstallment = InstallmentPrincipal +  InstallmentInt;
+            System.out.println("Totalinstallment = " + Totalinstallment);
 
-        Float PrincipalBal = cust.getAmount();
             mode1.addRow(new Object[0]);
             
             //Col 1 = InstallmentNo
@@ -466,11 +460,11 @@ public class LoanData extends javax.swing.JInternalFrame {
             //Col 7 = PrincipalBalance
             mode1.setValueAt(PrincipalBal-InstallmentPrincipal, mode1.getRowCount() -1, 6);
             
-             mode1.setValueAt("kuy", mode1.getRowCount() -1, 7);
+            mode1.setValueAt("kuy", mode1.getRowCount() -1, 7);
             //set new BalancePrincipal
-            PrincipalBal = PrincipalBal-InstallmentPrincipal;
+            PrincipalBal -= InstallmentPrincipal;
         }
-           }
+    }
         
        
     }//GEN-LAST:event_btnSearchMouseClicked
@@ -483,7 +477,27 @@ public class LoanData extends javax.swing.JInternalFrame {
     private void btnCalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnCalActionPerformed
-
+    
+    private List<CalLoan> readDataFromFile() {
+        String filePath = "D:\\StudentData.bin";
+        try {
+            FileInputStream file = new FileInputStream(filePath);
+            ObjectInput reader = new ObjectInputStream(file);
+            while(true) {
+                try {
+                    List<CalLoan> obj = (List<CalLoan>) reader.readObject();
+                    return obj;
+                } catch(Exception ex) {
+                    System.err.println("end of reader file ");
+                    break;
+                }
+            }
+        } catch(Exception ex) {
+            System.err.println("failed to read " + filePath + ", " + ex);
+        }
+        return null;
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -501,76 +515,26 @@ public class LoanData extends javax.swing.JInternalFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(LoanData.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoanData_user.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(LoanData.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoanData_user.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(LoanData.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoanData_user.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(LoanData.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoanData_user.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new LoanData().setVisible(true);
+                new LoanData_user().setVisible(true);
             }
         });
     }
-    
-    private boolean writeObjecttoFile(List<CalLoan> pListData){
-        
-      System.out.println("Start: Write");
-        
-       String fileP = "D:\\UserData.bin";
-       
-       try{
-          FileOutputStream file = new FileOutputStream(fileP);
-          ObjectOutputStream writer = new ObjectOutputStream(file);
-
-          writer.writeObject(pListData);
-
-          writer.close();
-          file.close();
-          
-          System.out.println("End Write: Success");
-          
-          return true;
-       }
-       catch(Exception ex){
-           System.err.println("failed to write" + fileP + ", "+ex);
-           
-           System.out.println("End Write: Failed");
-           
-           return false;
-       }
-    }
-   
-//        private List<CalLoan> readUserDataFromFile(){
-//           String fileP = "D:\\UserData.bin";
-//           try{
-//              FileInputStream file = new FileInputStream(fileP);
-//              ObjectInputStream reader = new ObjectInputStream(file);
-//              while(true){
-//                  try{
-//                   List<CalLoan> obj = (List<CalLoan>)reader.readObject();
-//                   return obj ;
-//                   
-//                  } catch(Exception ex){
-//                        System.err.println("end of reader file");
-//                         break;
-//                      }   
-//                  
-//              }
-//           
-//           }catch(Exception ex){
-//               System.err.println("failed to read" + fileP + ", "+ex);
-//               
-//          }
-//            return  null;
-//        }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCal;
