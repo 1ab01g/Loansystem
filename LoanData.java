@@ -12,26 +12,31 @@ import java.io.ObjectOutputStream;
 import java.util.*;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import java.time.LocalDateTime;
 /**
  *
  * @author kiwzu
  */
 
-public class LoanData extends javax.swing.JInternalFrame {
+public class LoanData extends javax.swing.JFrame {
 
     
     public List<CalLoan> InstallmentList = new ArrayList<>();
     UserInfo cust = new UserInfo();
     Float TotalInt;
-        Float Totalinstallment;
-        Float InstallmentPrincipal;
-        Float InstallmentInt;
+    Float Totalinstallment;
+    Float InstallmentPrincipal;
+    Float InstallmentPrincipals;
+    Float InstallmentInt;
+    int day,month,year;
+    String date;
+    
     /**
      * Creates new form lsm
      */
     public LoanData() {
         initComponents();
-        
+        pack();
         
     }
 
@@ -332,8 +337,14 @@ public class LoanData extends javax.swing.JInternalFrame {
         
         
         DefaultTableModel model = (DefaultTableModel)tblResult.getModel();
-
+        //create date for pay
+         day = LocalDateTime.now().getDayOfMonth();
+         month = LocalDateTime.now().getMonthValue();
+         year = LocalDateTime.now().getYear();
+         
+         
         for (int i = 1; i <= cust.getInstallment(); i++){
+            System.out.println("1cust.getInstallment = " + cust.getInstallment());
             System.out.println("Installment = " +i);
             System.out.println("model.getRowCount()-1 = " + String.valueOf(model.getRowCount()-1));
 
@@ -432,43 +443,48 @@ public class LoanData extends javax.swing.JInternalFrame {
        System.out.println(txtFullname.getText());
        System.out.println(cust.getFname());
        
-       
            if (txtFullname.getText().equalsIgnoreCase(cust.getFname())){
-           for (int i = 1; i <= cust.getInstallment(); i++){
-
+               System.out.println("cust.getInstallment = " + cust.getInstallment());
             String s = String.valueOf(cust.getIntRate()+"%");
             TotalInt = (float)cust.getAmount()*((cust.getIntRate()/100)*(cust.getInstallment()/(float)12));
-        System.out.println("TotalInt = " + TotalInt);
+            System.out.println("TotalInt = " + TotalInt);
 
-        InstallmentPrincipal = (float)cust.getAmount()/(float)cust.getInstallment();
-        System.out.println("InstallmentPrincipal = " + InstallmentPrincipal);
-        InstallmentInt = (float)TotalInt/(float)cust.getInstallment();
-        System.out.println("InstallmentAmount = " + InstallmentInt);
+            InstallmentPrincipals = (float)cust.getAmount()/(float)cust.getInstallment();
+            System.out.println("InstallmentPrincipals = " + InstallmentPrincipals);
+            InstallmentInt = (float)TotalInt/(float)cust.getInstallment();
+            System.out.println("InstallmentAmount = " + InstallmentInt);
 
-        Totalinstallment = InstallmentPrincipal +  InstallmentInt;
-        System.out.println("Totalinstallment = " + Totalinstallment);
-
-        Float PrincipalBal = cust.getAmount();
-            mode1.addRow(new Object[0]);
+            Totalinstallment = InstallmentPrincipals +  InstallmentInt;
+            System.out.println("Totalinstallment = " + Totalinstallment);
+            Float PrincipalBals = cust.getAmount();
             
+        for (int i = 1; i <= cust.getInstallment(); i++){
+            
+            mode1.addRow(new Object[0]);
             //Col 1 = InstallmentNo
             mode1.setValueAt(i, mode1.getRowCount()-1, 0);
             //Col 2 = BalanceForward
-            mode1.setValueAt(PrincipalBal, mode1.getRowCount() -1, 1);
+            mode1.setValueAt(PrincipalBals, mode1.getRowCount() -1, 1);
             //Col 3 = IntRate for year
             mode1.setValueAt(s, mode1.getRowCount() -1, 2);
             //Col 4 = TotalInstallment
             mode1.setValueAt(Totalinstallment, mode1.getRowCount() -1, 3);
-            //Col 5 = InstallmentPrincipal
-            mode1.setValueAt(InstallmentPrincipal, mode1.getRowCount() -1, 4);
+            //Col 5 = InstallmentPrincipals
+            mode1.setValueAt(InstallmentPrincipals, mode1.getRowCount() -1, 4);
             //Col 6 = InstallmentAmount
             mode1.setValueAt(InstallmentInt, mode1.getRowCount() -1, 5);
             //Col 7 = PrincipalBalance
-            mode1.setValueAt(PrincipalBal-InstallmentPrincipal, mode1.getRowCount() -1, 6);
-            
-             mode1.setValueAt("kuy", mode1.getRowCount() -1, 7);
+            mode1.setValueAt(PrincipalBals-InstallmentPrincipals, mode1.getRowCount() -1, 6);
+            //Col 8 = PayDate
+             int j = 1;
+            month = month + j;
+            j++;
+            date = day+"-"+month+"-"+year;
+            mode1.setValueAt(date, mode1.getRowCount() -1, 7);  
+            System.out.println("month = " + month);
             //set new BalancePrincipal
-            PrincipalBal = PrincipalBal-InstallmentPrincipal;
+            PrincipalBals = PrincipalBals-InstallmentPrincipals;
+            System.out.println("PrincipalBals = " + PrincipalBals);
         }
            }
         
