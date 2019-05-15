@@ -15,13 +15,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class LoanData_search extends javax.swing.JInternalFrame {
 
-    
     public List<CalLoan> InstallmentList = new ArrayList<>();
-    UserInfo cust = new UserInfo();
-    Float TotalInt;
-        Float Totalinstallment;
-        Float InstallmentPrincipal;
-        Float InstallmentInt;
     /**
      * Creates new form
      */
@@ -417,55 +411,42 @@ public class LoanData_search extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnSavefileMouseClicked
 
     private void btnSearchMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSearchMouseClicked
-       InstallmentList = readDataFromFile();
+        InstallmentList = readDataFromFile();
        
-       DefaultTableModel mode1 = (DefaultTableModel)tblSearch.getModel();
-       mode1.setRowCount(0);
-       //CalLoan cal = new CalLoan();
+        DefaultTableModel mode1 = (DefaultTableModel)tblSearch.getModel();
+        mode1.setRowCount(0);
+        //CalLoan cal = new CalLoan();
        
-       System.out.println(txtFullname.getText());
-       System.out.println(cust.getFname());
+        System.out.println(txtFullname.getText());
        
-       
-        if (txtFullname.getText().equalsIgnoreCase(cust.getFname())){
-           Float PrincipalBal = cust.getAmount();
-            for (int i = 1; i <= cust.getInstallment(); i++){
+        for(CalLoan z : InstallmentList) {
+            if (txtFullname.getText().equals(z.getFname())){
+                Float PrincipalBal = z.getPrevPrincipal();
+                System.out.println(z.getInstallmentNo());
+                for (int i = 1; i <= z.getInstallmentNo(); i++){
+                    mode1.addRow(new Object[0]);
 
-            String s = String.valueOf(cust.getIntRate()+"%");
-            TotalInt = (float)cust.getAmount()*((cust.getIntRate()/100)*(cust.getInstallment()/(float)12));
-            System.out.println("TotalInt = " + TotalInt);
-
-            InstallmentPrincipal = (float)cust.getAmount()/(float)cust.getInstallment();
-            System.out.println("InstallmentPrincipal = " + InstallmentPrincipal);
-            InstallmentInt = (float)TotalInt/(float)cust.getInstallment();
-            System.out.println("InstallmentAmount = " + InstallmentInt);
-
-            Totalinstallment = InstallmentPrincipal +  InstallmentInt;
-            System.out.println("Totalinstallment = " + Totalinstallment);
-
-            mode1.addRow(new Object[0]);
-            
-            //Col 1 = InstallmentNo
-            mode1.setValueAt(i, mode1.getRowCount()-1, 0);
-            //Col 2 = BalanceForward
-            mode1.setValueAt(PrincipalBal, mode1.getRowCount() -1, 1);
-            //Col 3 = IntRate for year
-            mode1.setValueAt(s, mode1.getRowCount() -1, 2);
-            //Col 4 = TotalInstallment
-            mode1.setValueAt(Totalinstallment, mode1.getRowCount() -1, 3);
-            //Col 5 = InstallmentPrincipal
-            mode1.setValueAt(InstallmentPrincipal, mode1.getRowCount() -1, 4);
-            //Col 6 = InstallmentAmount
-            mode1.setValueAt(InstallmentInt, mode1.getRowCount() -1, 5);
-            //Col 7 = PrincipalBalance
-            mode1.setValueAt(PrincipalBal-InstallmentPrincipal, mode1.getRowCount() -1, 6);
-            
-            mode1.setValueAt("kuy", mode1.getRowCount() -1, 7);
-            //set new BalancePrincipal
-            PrincipalBal -= InstallmentPrincipal;
+                    //Col 1 = InstallmentNo
+                    mode1.setValueAt(i, mode1.getRowCount()-1, 0);
+                    //Col 2 = BalanceForward
+                    mode1.setValueAt(PrincipalBal, mode1.getRowCount() -1, 1);
+                    //Col 3 = IntRate for year
+                    mode1.setValueAt(z.getIntRate(), mode1.getRowCount() -1, 2);
+                    //Col 4 = TotalInstallment
+                    mode1.setValueAt(z.getInstallmentInt(), mode1.getRowCount() -1, 3);
+                    //Col 5 = InstallmentPrincipal
+                    mode1.setValueAt(z.getInstallmentPrincipal(), mode1.getRowCount() -1, 4);
+                    //Col 6 = InstallmentAmount
+                    mode1.setValueAt(z.getInstallmentAmt(), mode1.getRowCount() -1, 5);
+                    //Col 7 = PrincipalBalance
+                    mode1.setValueAt(PrincipalBal - z.getInstallmentPrincipal(), mode1.getRowCount() -1, 6);
+                    mode1.setValueAt("kuy", mode1.getRowCount() -1, 7);
+                    
+                    //set new BalancePrincipal
+                    PrincipalBal -= z.getInstallmentPrincipal();
+                }
+            }
         }
-    }
-        
        
     }//GEN-LAST:event_btnSearchMouseClicked
 
@@ -479,7 +460,7 @@ public class LoanData_search extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCalActionPerformed
     
     private List<CalLoan> readDataFromFile() {
-        String filePath = "D:\\StudentData.bin";
+        String filePath = "D:\\UserData.bin";
         try {
             FileInputStream file = new FileInputStream(filePath);
             ObjectInput reader = new ObjectInputStream(file);
